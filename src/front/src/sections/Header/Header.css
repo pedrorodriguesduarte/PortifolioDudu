@@ -11,9 +11,11 @@
   box-sizing: border-box;
 }
 
-.header .logo {
-  font-weight: bold;
-  font-size: 24px;
+.logo-img {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  display: block;
 }
 
 .header nav a {

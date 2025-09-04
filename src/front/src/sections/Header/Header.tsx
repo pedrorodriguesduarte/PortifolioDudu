@@ -1,16 +1,23 @@
+import React from "react";
 import { Link } from "react-scroll";
 import "./Header.css";
+import logo from "../../assets/loguita.jpeg";
 import FadeInWrapper from "../../components/FadeInWrapper";
 import { useLanguage } from "../../hooks/useLanguage";
 
-function Header() {
+const Header: React.FC = () => {
   const { t, language, toggleLanguage } = useLanguage();
 
   return (
     <header className="header">
+      {/* Logo */}
       <FadeInWrapper>
-        <div className="logo">[X]</div>
+        <div className="logo">
+          <img src={logo} alt="Logo" className="logo-img" />
+        </div>
       </FadeInWrapper>
+
+      {/* Navegação */}
       <FadeInWrapper delay={200}>
         <nav>
           <Link to="about" spy={true} smooth={true} duration={500}>
@@ -24,6 +31,8 @@ function Header() {
           </Link>
         </nav>
       </FadeInWrapper>
+
+      {/* Botões à direita */}
       <div className="header-right">
         <FadeInWrapper delay={300}>
           <button
@@ -44,6 +53,6 @@ function Header() {
       </div>
     </header>
   );
-}
+};
 
 export default Header;

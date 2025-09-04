@@ -18,15 +18,26 @@
 }
 
 .hero-text h1 {
-  font-size: 4rem;
+  font-size: 5rem; /* aumentei */
   margin: 0;
+  font-family: 'Poppins', sans-serif; /* nova fonte */
+  font-weight: 700; /* deixa o nome mais marcante */
+  color: #111; /* cor mais forte */
+}
+
+.hero-text p {
+  font-size: 1.2rem;
+  font-family: 'Poppins', sans-serif;
+  color: #444;
+  margin-top: 10px;
 }
 
 .hero-image {
-  width: 150px;
-  height: 150px;
+  width: 350px; /* aumentei de 150px → 250px */
+  height: 350px;
   border-radius: 50%;
   object-fit: cover; /* mantém a proporção da foto dentro do círculo */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); /* sombra para destacar */
 }
 
 .social-icons-placeholder {
@@ -35,5 +46,6 @@
 
 .social-icons-placeholder span {
   margin-right: 5px;
-  font-size: 1.5rem;
+  font-size: 1.8rem; /* aumentei um pouco */
+  color: #222;
 }
