@@ -1,4 +1,5 @@
 import type { Translations } from "./types";
+import type { SupportedLanguage } from "../types/translations.types";
 
 // Traduções em português
 const ptTranslations: Translations = {
@@ -100,8 +101,15 @@ const enTranslations: Translations = {
   },
 };
 
-// Traduções dos projetos
-export const projectsTranslations = {
+// Tipo para projeto individual
+export interface Project {
+  year: string;
+  title: string;
+  description: string;
+}
+
+// Traduções dos projetos com type safety
+export const projectsTranslations: Record<SupportedLanguage, Project[]> = {
   pt: [
     {
       year: "2024",
@@ -148,8 +156,8 @@ export const projectsTranslations = {
   ],
 };
 
-// Objeto de traduções
-export const translations = {
+// Objeto de traduções com type safety
+export const translations: Record<SupportedLanguage, Translations> = {
   pt: ptTranslations,
   en: enTranslations,
 };

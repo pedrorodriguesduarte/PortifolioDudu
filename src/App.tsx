@@ -6,21 +6,28 @@ import Header from "./sections/Header/Header";
 import Hero from "./sections/Hero/Hero";
 import Projects from "./sections/Projects/Projects";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
+/**
+ * Componente principal da aplicação
+ * Contém todas as seções do portfólio com gerenciamento de estado de idioma
+ */
 function App() {
   return (
-    <LanguageProvider>
-      <div className="App">
-        <Header />
-        <main>
-          <Hero />
-          <About />
-          <Projects />
-          <Experience />
-        </main>
-        <Contact />
-      </div>
-    </LanguageProvider>
+    <ErrorBoundary>
+      <LanguageProvider>
+        <div className="App">
+          <Header />
+          <main role="main">
+            <Hero />
+            <About />
+            <Projects />
+            <Experience />
+          </main>
+          <Contact />
+        </div>
+      </LanguageProvider>
+    </ErrorBoundary>
   );
 }
 

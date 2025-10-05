@@ -1,35 +1,55 @@
 import { useEffect, useRef, useState } from "react";
 
-export const useFadeIn = (threshold: number = 0.1) => {
+/**
+ * Hook para animações de fade-in usando Intersection Observer
+ * @param threshold - Porcentagem do elemento que deve estar visível para disparar a animação (0-1)
+ * @param rootMargin - Margem ao redor do root para expandir ou contrair a área de detecção
+ * @param triggerOnce - Se true, anima apenas uma vez; se false, anima sempre que entra/sai da tela
+ */
+export const useFadeIn = (
+  threshold: number = 0.1,
+  rootMargin: string = "0px 0px -50px 0px",
+  triggerOnce: boolean = true
+) => {
   const [isVisible, setIsVisible] = useState(false);
-  const elementRef = useRef<HTMLDivElement>(null);
+  const elementRef = useRef<HTMLElement>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    const element = elementRef.current;
+    if (!element) return;
+
+    // Cleanup do observer anterior se existir
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    observerRef.current = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-          // Opcional: desobservar após aparecer para melhor performance
-          // observer.unobserve(entry.target);
+          // Remove observer se triggerOnce for true para melhor performance
+          if (triggerOnce && observerRef.current) {
+            observerRef.current.unobserve(element);
+          }
+        } else if (!triggerOnce) {
+          setIsVisible(false);
         }
       },
       {
         threshold,
-        rootMargin: "0px 0px -50px 0px", // Começa a animar um pouco antes de entrar na tela
+        rootMargin,
       }
     );
 
-    const currentElement = elementRef.current;
-    if (currentElement) {
-      observer.observe(currentElement);
-    }
+    observerRef.current.observe(element);
 
     return () => {
-      if (currentElement) {
-        observer.unobserve(currentElement);
+      if (observerRef.current) {
+        observerRef.current.disconnect();
       }
     };
-  }, [threshold]);
+  }, [threshold, rootMargin, triggerOnce]);
 
   return { elementRef, isVisible };
 };
