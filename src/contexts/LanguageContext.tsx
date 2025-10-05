@@ -2,11 +2,16 @@ import React, { createContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import { translations } from "../translations";
 import type { Translations } from "../translations";
+import { LanguageDetectionService } from "../services/languageDetection.service";
+import { LocalStorageService } from "../services/localStorage.service";
+import type { SupportedLanguage } from "../types/translations.types";
+import { isSupportedLanguage } from "../types/translations.types";
 
 interface LanguageContextType {
-  language: string;
+  language: SupportedLanguage;
   t: Translations;
   toggleLanguage: () => void;
+  setLanguage: (language: SupportedLanguage) => void;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(
@@ -20,35 +25,40 @@ interface LanguageProviderProps {
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   children,
 }) => {
-  const [language, setLanguage] = useState<string>("pt");
+  const [language, setLanguageState] = useState<SupportedLanguage>("pt");
 
   useEffect(() => {
-    // Detecta o idioma do navegador
-    const browserLanguage = navigator.language.split("-")[0];
-
-    // Se o navegador estiver em inglês, usa inglês, senão usa português
-    const detectedLanguage = browserLanguage === "en" ? "en" : "pt";
-    setLanguage(detectedLanguage);
-
-    // Salva no localStorage para persistir a escolha do usuário
-    const savedLanguage = localStorage.getItem("language");
-    if (savedLanguage && (savedLanguage === "pt" || savedLanguage === "en")) {
-      setLanguage(savedLanguage);
+    // Primeiro, tenta obter idioma salvo no localStorage
+    const savedLanguage = LocalStorageService.getLanguage();
+    
+    if (savedLanguage && isSupportedLanguage(savedLanguage)) {
+      setLanguageState(savedLanguage);
+    } else {
+      // Se não há idioma salvo, detecta do navegador
+      const detectedLanguage = LanguageDetectionService.detectBrowserLanguage();
+      setLanguageState(detectedLanguage);
+      // Salva a detecção para próximas visitas
+      LocalStorageService.setLanguage(detectedLanguage);
     }
   }, []);
 
-  const toggleLanguage = () => {
-    const newLanguage = language === "pt" ? "en" : "pt";
-    setLanguage(newLanguage);
-    localStorage.setItem("language", newLanguage);
+  const setLanguage = (newLanguage: SupportedLanguage) => {
+    setLanguageState(newLanguage);
+    LocalStorageService.setLanguage(newLanguage);
   };
 
-  const t = translations[language as keyof typeof translations];
+  const toggleLanguage = () => {
+    const newLanguage: SupportedLanguage = language === "pt" ? "en" : "pt";
+    setLanguage(newLanguage);
+  };
+
+  const t = translations[language];
 
   const value: LanguageContextType = {
     language,
     t,
     toggleLanguage,
+    setLanguage,
   };
 
   return (
